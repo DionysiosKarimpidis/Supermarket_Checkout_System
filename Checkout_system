@@ -1,0 +1,61 @@
+import random
+
+products = { 'normal': {"a" : 50, "b" : 30, "c" : 20, "d" : 15},
+			'special': {"a": 130, "b" : 45},
+			'special_quantity': {"a": 3, "b" : 2}}
+
+
+
+purchased_items = ['a', 'b', 'b', 'a', 'c', 'c', 'b', 'b'] 	#read manually
+basket = []
+
+def scan_item(item):
+
+	if item in products['normal']:
+		basket.append(item)
+
+
+def calculate_special(item, quantity):
+
+	number_of_sp_needed = products['special_quantity'].get(item)
+	cost_of_sp_needed = products['special'].get(item)
+	p1 = quantity // number_of_sp_needed
+	p2 = quantity % number_of_sp_needed
+	special_price = (p1*cost_of_sp_needed) + (p2 * products['normal'].get(item))
+	return special_price
+
+def calculate_normal(item, quantity):
+
+	item_value = products['normal'].get(item)
+	return  quantity * item_value
+
+
+def is_special(item, quantity):
+	if item in products['special']:
+		number_of_sp_needed = products['special_quantity'].get(item)
+		if (quantity // number_of_sp_needed) >= 1:
+			return True
+		else:
+		 	return False
+
+
+def main():
+
+	for item in purchased_items:
+		scan_item(item)
+
+	sp, np = 0, 0	#sp = special price, np = normal price
+	total, tmp_non_special , tmp_special= 0, 0, 0
+
+	set_of_items = list(set(basket))
+	for i in range(len(set_of_items)):
+		quantity = basket.count(set_of_items[i])
+		if is_special(set_of_items[i], quantity):
+			tmp_special += calculate_special(set_of_items[i], quantity)
+		else:
+			tmp_non_special += calculate_normal(set_of_items[i], quantity)
+	total = tmp_special + tmp_non_special
+	print("total", total)
+
+
+main()
